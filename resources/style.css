@@ -1,0 +1,30 @@
+.drop-zone {
+  border: 2px dashed alpha(@accent_color, 0.5);
+  border-radius: 20px;
+  background: alpha(@accent_bg_color, 0.05);
+}
+
+.drop-zone.drag-hover {
+  border-color: @accent_color;
+  background: alpha(@accent_bg_color, 0.16);
+}
+
+.install-target {
+  padding: 12px;
+}
+
+.app-icon {
+  border-radius: 22px;
+}
+
+.library-icon {
+  border-radius: 9px;
+}
+
+.config-error {
+  color: @error_color;
+}
+
+.success-icon {
+  color: @success_color;
+}

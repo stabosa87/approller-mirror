@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=AppRoller
+GenericName=App Installer
+Comment=Install and manage apps
+Exec=@EXEC@ %F
+TryExec=@EXEC@
+Icon=ing.stab.AppRoller
+Terminal=false
+Categories=Utility;System;
+Keywords=install;apps;applications;manager;
+StartupNotify=true
+StartupWMClass=ing.stab.AppRoller
+MimeType=application/x-appimage;application/vnd.appimage;

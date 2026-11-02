@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/x-appimage">
+    <comment>Application bundle</comment>
+    <comment xml:lang="en">Application bundle</comment>
+    <glob pattern="*.AppImage"/>
+    <glob pattern="*.appimage"/>
+    <sub-class-of type="application/x-executable"/>
+  </mime-type>
+</mime-info>
