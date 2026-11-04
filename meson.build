@@ -1,4 +1,4 @@
-project('approller', 'vala', 'c', version: '0.1.1')
+project('approller', 'vala', 'c', version: '0.1.2')
 
 gnome = import('gnome')
 

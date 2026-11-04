@@ -1,5 +1,5 @@
 Name:           approller
-Version:        0.1.1
+Version:        0.1.2
 Release:        1%{?dist}
 Summary:        Install and manage apps.
 License:        MIT
