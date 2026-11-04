@@ -59,3 +59,9 @@ install_data('data/ing.stab.AppRoller.xml',
 
 install_data('data/icons/hicolor/scalable/apps/ing.stab.AppRoller.svg',
   install_dir: get_option('datadir') / 'icons/hicolor/scalable/apps')
+
+install_data('data/ing.stab.AppRoller.metainfo.xml',
+  install_dir: get_option('datadir') / 'metainfo')
+
+install_data('LICENSE',
+  install_dir: get_option('datadir') / 'licenses' / 'ing.stab.AppRoller')
