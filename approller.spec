@@ -59,5 +59,7 @@ gtk-update-icon-cache -q -t -f %{_datadir}/icons/hicolor >/dev/null 2>&1 || :
 %{_datadir}/applications/ing.stab.AppRoller.desktop
 %{_datadir}/icons/hicolor/scalable/apps/ing.stab.AppRoller.svg
 %{_datadir}/mime/packages/ing.stab.AppRoller.xml
+%{_datadir}/metainfo/ing.stab.AppRoller.metainfo.xml
+%{_datadir}/licenses/ing.stab.AppRoller/LICENSE
 %doc README.md
 %license LICENSE
