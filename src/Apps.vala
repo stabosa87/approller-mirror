@@ -28,6 +28,7 @@ namespace AppRoller {
                     var app = new InstalledApp ();
                     app.name = parsed.name != null && parsed.name.strip () != "" ? parsed.name : Path.get_basename (name);
                     app.comment = parsed.comment;
+                    app.version = parsed.version;
                     app.slug = Path.get_basename (name).split (".")[0];
                     app.categories = parsed.categories;
                     app.arguments = parsed.arguments;
@@ -43,6 +44,15 @@ namespace AppRoller {
             }
             result.sort ((a, b) => a.name.down ().collate (b.name.down ()));
             return result;
+        }
+
+        public static string? installed_version (string app_path) {
+            foreach (var app in list ()) {
+                if (app.app_path == app_path) {
+                    return app.version;
+                }
+            }
+            return null;
         }
 
         private static string? resolve_icon (string slug, string? icon) {

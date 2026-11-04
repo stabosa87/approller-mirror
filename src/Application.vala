@@ -1,6 +1,5 @@
 namespace AppRoller {
     public const string APP_ID = "ing.stab.AppRoller";
-    public const string VERSION = "0.1.0";
 
     public class Application : Adw.Application {
         private Window? window = null;

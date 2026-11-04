@@ -18,6 +18,14 @@ resources = gnome.compile_resources(
   c_name: 'app_roller',
 )
 
+version_config = configuration_data()
+version_config.set('VERSION', meson.project_version())
+version_file = configure_file(
+  input: 'src/Version.vala.in',
+  output: 'Version.vala',
+  configuration: version_config,
+)
+
 sources = files(
   'src/AppImage.vala',
   'src/InstalledApp.vala',
@@ -36,6 +44,7 @@ sources = files(
   'src/Application.vala',
 )
 sources += resources
+sources += version_file
 
 executable('approller',
   sources,

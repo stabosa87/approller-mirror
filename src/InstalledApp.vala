@@ -3,6 +3,7 @@ namespace AppRoller {
         public string name = "";
         public string? comment = null;
         public string slug = "";
+        public string? version = null;
         public string? categories = null;
         public string? field_code = null;
         public string? arguments = null;

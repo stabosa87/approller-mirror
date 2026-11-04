@@ -234,12 +234,16 @@ namespace AppRoller {
             ready.meta_label.label = meta;
             var target = Installer.target_path (app);
             var replacing = FileUtils.test (target, FileTest.EXISTS);
-            ready.install_button.label = replacing ? "Replace" : "Install";
+            var existing_version = Apps.installed_version (target);
+            var upgrading = replacing && existing_version != null && app.version != null &&
+                            existing_version != app.version;
+            ready.install_button.label = upgrading ? "Upgrade" : (replacing ? "Replace" : "Install");
             ready.choose_button.visible = !opened_with_file;
-            ready.destination_label.label = "Installs to " + System.pretty_path (target);
-            ready.hint_label.label = replacing
-                ? "Drag the app onto Applications to replace the installed copy, or click Replace."
-                : "Drag the app onto Applications to install it, or click Install.";
+            ready.hint_label.label = upgrading
+                ? "Drag the app onto Applications to upgrade the installed copy, or click Upgrade."
+                : replacing
+                    ? "Drag the app onto Applications to replace the installed copy, or click Replace."
+                    : "Drag the app onto Applications to install it, or click Install.";
             use_installer_size ();
             stack.visible_child_name = "ready";
         }
@@ -253,7 +257,7 @@ namespace AppRoller {
             installing_now = true;
             installed = null;
             retry_install = true;
-            installing_page.reset ("Installing " + app.name + "…", "Copying the app and creating a desktop entry.");
+            installing_page.reset ("Installing " + app.name + "…", "Installing the app.");
             use_installer_size ();
             stack.visible_child_name = "installing";
 
@@ -284,8 +288,6 @@ namespace AppRoller {
 
         private void show_done (Installed result) {
             done.title_label.label = result.name + " is installed";
-            done.subtitle_label.label = "It's in " + System.pretty_path (result.app_path) + " and should now appear in your app grid.";
-            done.details_label.label = "Desktop entry: " + System.pretty_path (result.desktop_path);
             if (result.icon_path != null) {
                 done.app_icon.set_from_file (result.icon_path);
                 done.app_icon.visible = true;
