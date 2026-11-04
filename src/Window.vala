@@ -12,6 +12,7 @@ namespace AppRoller {
         private string? retry_path = null;
         private bool retry_install = false;
         private bool installing_now = false;
+        private bool opened_with_file = false;
         private uint request_id = 0;
         private Adw.Window? config_window = null;
 
@@ -112,6 +113,7 @@ namespace AppRoller {
         }
 
         public void handle_open_files (GLib.File[] files) {
+            opened_with_file = true;
             string[] paths = {};
             foreach (var file in files) {
                 var path = file.get_path ();
@@ -137,6 +139,7 @@ namespace AppRoller {
                 toast ("Installation in progress. Please wait…");
                 return;
             }
+            opened_with_file = false;
             var filter = new Gtk.FileFilter ();
             filter.name = "Application files";
             filter.add_pattern ("*.AppImage");
@@ -232,6 +235,7 @@ namespace AppRoller {
             var target = Installer.target_path (app);
             var replacing = FileUtils.test (target, FileTest.EXISTS);
             ready.install_button.label = replacing ? "Replace" : "Install";
+            ready.choose_button.visible = !opened_with_file;
             ready.destination_label.label = "Installs to " + System.pretty_path (target);
             ready.hint_label.label = replacing
                 ? "Drag the app onto Applications to replace the installed copy, or click Replace."
@@ -297,6 +301,7 @@ namespace AppRoller {
         private void show_error (string title, string message) {
             error_page.set_error (title, message);
             error_page.retry_button.visible = retry_path != null || retry_install;
+            error_page.choose_button.visible = !opened_with_file;
             use_installer_size ();
             stack.visible_child_name = "error";
         }
@@ -307,6 +312,7 @@ namespace AppRoller {
 
         private void reset_to_library () {
             request_id += 1;
+            opened_with_file = false;
             inspection = null;
             installed = null;
             retry_path = null;
@@ -335,6 +341,7 @@ namespace AppRoller {
             if (inspection != null && inspection.source == Filename.canonicalize (path)) {
                 begin_install ();
             } else {
+                opened_with_file = false;
                 begin_inspect (path);
             }
         }
