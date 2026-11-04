@@ -1,5 +1,9 @@
 namespace AppRoller {
     public class System : GLib.Object {
+        public static bool is_flatpak () {
+            return Environment.get_variable ("FLATPAK_ID") != null;
+        }
+
         public static string home_dir () {
             return Environment.get_home_dir ();
         }
@@ -17,6 +21,9 @@ namespace AppRoller {
         }
 
         public static string desktop_dir () {
+            if (is_flatpak ()) {
+                return Path.build_filename (home_dir (), ".local", "share", "applications");
+            }
             return Path.build_filename (data_home (), "applications");
         }
 

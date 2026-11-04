@@ -1,0 +1,25 @@
+app-id: ing.stab.AppRoller
+runtime: org.gnome.Platform
+runtime-version: '51'
+sdk: org.gnome.Sdk
+command: approller
+
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --filesystem=home
+  - --env=APPIMAGE_EXTRACT_AND_RUN=1
+
+modules:
+  - name: approller
+    buildsystem: meson
+    sources:
+      - type: dir
+        path: ..
+        skip:
+          - .git
+          - build
+          - build-flatpak
+          - .flatpak-builder
