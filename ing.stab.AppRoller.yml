@@ -17,9 +17,11 @@ modules:
     buildsystem: meson
     sources:
       - type: dir
-        path: ..
+        path: .
         skip:
           - .git
           - build
           - build-flatpak
           - .flatpak-builder
+          - repo
+          - '*.flatpak'

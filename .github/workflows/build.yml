@@ -1,0 +1,51 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: fedora:latest
+    steps:
+      - name: Install dependencies
+        run: >-
+          dnf install -y git nodejs meson ninja-build vala gcc pkgconf-pkg-config
+          glib2-devel gtk4-devel libadwaita-devel gdk-pixbuf2-devel
+
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: |
+          meson setup build --prefix=/usr
+          ninja -C build
+
+  flatpak:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install flatpak builder
+        run: |
+          if command -v sudo >/dev/null; then SUDO=sudo; fi
+          $SUDO apt-get update
+          $SUDO apt-get install -y flatpak flatpak-builder elfutils
+
+      - name: Install runtime
+        run: |
+          flatpak remote-add --if-not-exists --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          flatpak install -y --user flathub org.gnome.Platform//51 org.gnome.Sdk//51
+
+      - name: Build bundle
+        run: |
+          flatpak-builder --user --force-clean --disable-rofiles-fuse --repo=repo build-flatpak ing.stab.AppRoller.yml
+          flatpak build-bundle repo ing.stab.AppRoller.flatpak ing.stab.AppRoller master
+
+      - name: Upload bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: approller-flatpak
+          path: ing.stab.AppRoller.flatpak
+          if-no-files-found: error
