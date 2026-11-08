@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        Install and manage apps.
 License:        MIT
 URL:            https://git.stab.ing/stabosa87/AppRoller
-Source0:        https://git.stab.ing/stabosa87/AppRoller/archive/master.zip
+Source0:        https://git.stab.ing/stabosa87/AppRoller/archive/0.1.2.zip
 
 BuildRequires:  meson
 BuildRequires:  ninja-build
