@@ -11,6 +11,9 @@ namespace AppRoller {
         public string desktop_path = "";
         public string? icon = null;
         public string? icon_path = null;
+        public string? source_url = null;
+        public string? release_tag = null;
+        public string? asset_name = null;
         public bool available = false;
     }
 
@@ -20,5 +23,8 @@ namespace AppRoller {
         public string categories = "";
         public string arguments = "";
         public string? icon_source = null;
+        public string? source_url = null;
+        public string? release_tag = null;
+        public string? asset_name = null;
     }
 }

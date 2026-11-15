@@ -7,7 +7,27 @@ namespace AppRoller {
         }
 
         ~TempDir () {
-            DirUtils.remove (path);
+            remove_tree (path);
+        }
+
+        private static void remove_tree (string directory) {
+            try {
+                var dir = Dir.open (directory);
+                string? name;
+                while ((name = dir.read_name ()) != null) {
+                    if (name == "." || name == "..") {
+                        continue;
+                    }
+                    var child = Path.build_filename (directory, name);
+                    if (FileUtils.test (child, FileTest.IS_DIR) && !FileUtils.test (child, FileTest.IS_SYMLINK)) {
+                        remove_tree (child);
+                    } else {
+                        FileUtils.remove (child);
+                    }
+                }
+            } catch (FileError e) {
+            }
+            DirUtils.remove (directory);
         }
     }
 
@@ -27,7 +47,11 @@ namespace AppRoller {
         public uint8[]? icon_bytes = null;
         public string? icon_extension = null;
         public string? preview_path = null;
+        public string? source_url = null;
+        public string? release_tag = null;
+        public string? asset_name = null;
         internal TempDir? scratch = null;
+        internal TempDir? download_scratch = null;
     }
 
     public class Installed : GLib.Object {

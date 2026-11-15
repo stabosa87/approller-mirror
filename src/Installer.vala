@@ -358,6 +358,15 @@ namespace AppRoller {
             if (app.version != null) {
                 keyfile.set_string (DesktopEntry.GROUP, "X-AppImage-Version", app.version);
             }
+            if (app.source_url != null && app.source_url.strip () != "") {
+                keyfile.set_string (DesktopEntry.GROUP, "X-AppRoller-Source", app.source_url.strip ());
+            }
+            if (app.release_tag != null && app.release_tag.strip () != "") {
+                keyfile.set_string (DesktopEntry.GROUP, "X-AppRoller-Release", app.release_tag.strip ());
+            }
+            if (app.asset_name != null && app.asset_name.strip () != "") {
+                keyfile.set_string (DesktopEntry.GROUP, "X-AppRoller-Asset", app.asset_name.strip ());
+            }
             keyfile.set_boolean (DesktopEntry.GROUP, "X-AppRoller-Managed", true);
             keyfile.set_string (DesktopEntry.GROUP, "X-AppRoller-App", app_path);
 

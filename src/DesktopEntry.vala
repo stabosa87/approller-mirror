@@ -12,11 +12,26 @@ namespace AppRoller {
         public string? app_path;
         public string? arguments;
         public string? version;
+        public string? source_url;
+        public string? release_tag;
+        public string? asset_name;
         public bool startup_notify;
     }
 
     public class DesktopEntry {
         public const string GROUP = "Desktop Entry";
+
+        public static string? app_path_value (string? value) {
+            if (value == null) {
+                return null;
+            }
+            var path = value.strip ();
+            if (path.length >= 2 && path.has_prefix ("\"") && path.has_suffix ("\"")) {
+                path = path.substring (1, path.length - 2);
+                path = path.replace ("\\\"", "\"").replace ("\\\\", "\\");
+            }
+            return path != "" ? path : null;
+        }
 
         public static ParsedEntry parse (string contents) {
             var entry = ParsedEntry ();
@@ -39,6 +54,9 @@ namespace AppRoller {
             entry.app_path = get (keyfile, "X-AppRoller-App");
             entry.arguments = get (keyfile, "X-AppRoller-Args");
             entry.version = get (keyfile, "X-AppImage-Version");
+            entry.source_url = get (keyfile, "X-AppRoller-Source");
+            entry.release_tag = get (keyfile, "X-AppRoller-Release");
+            entry.asset_name = get (keyfile, "X-AppRoller-Asset");
             try {
                 entry.startup_notify = keyfile.get_boolean (GROUP, "StartupNotify");
             } catch (KeyFileError e) {

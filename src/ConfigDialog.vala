@@ -6,6 +6,9 @@ namespace AppRoller {
         private Adw.EntryRow comment_row;
         private Adw.EntryRow categories_row;
         private Adw.EntryRow arguments_row;
+        private Adw.EntryRow source_row;
+        private Adw.EntryRow release_row;
+        private Adw.EntryRow asset_row;
         private Gtk.Label error_label;
         private string? icon_source = null;
 
@@ -56,6 +59,29 @@ namespace AppRoller {
             details.add (arguments_row);
             preferences.add (details);
 
+            var update_group = new Adw.PreferencesGroup ();
+            update_group.title = "Updates";
+            update_group.description = "Leave the source url empty to stop checking this app for updates.";
+
+            source_row = new Adw.EntryRow ();
+            source_row.title = "Source url";
+            source_row.text = app.source_url != null ? app.source_url : "";
+            source_row.tooltip_text = "Git forge repository or direct AppImage url";
+            update_group.add (source_row);
+
+            release_row = new Adw.EntryRow ();
+            release_row.title = "Release tag";
+            release_row.text = app.release_tag != null ? app.release_tag : "";
+            release_row.tooltip_text = "Tag from the release the app was installed from";
+            update_group.add (release_row);
+
+            asset_row = new Adw.EntryRow ();
+            asset_row.title = "Asset name";
+            asset_row.text = app.asset_name != null ? app.asset_name : "";
+            asset_row.tooltip_text = "AppImage asset used for this app";
+            update_group.add (asset_row);
+            preferences.add (update_group);
+
             var icon_group = new Adw.PreferencesGroup ();
             icon_group.title = "Icon";
             var icon_row = new Adw.ActionRow ();
@@ -102,6 +128,9 @@ namespace AppRoller {
             config.categories = categories_row.text;
             config.arguments = arguments_row.text;
             config.icon_source = icon_source;
+            config.source_url = source_row.text;
+            config.release_tag = release_row.text;
+            config.asset_name = asset_row.text;
             return config;
         }
 

@@ -20,8 +20,14 @@ namespace AppRoller {
                         continue;
                     }
                     var parsed = DesktopEntry.parse (contents);
-                    var app_path = parsed.app_path != null ? parsed.app_path : parsed.try_exec;
-                    var executable = app_path != null ? DesktopEntry.exec_path (app_path) : null;
+                    var app_path = DesktopEntry.app_path_value (parsed.app_path);
+                    if (app_path == null && parsed.try_exec != null) {
+                        app_path = DesktopEntry.exec_path (parsed.try_exec);
+                    }
+                    if (app_path == null && parsed.exec != null) {
+                        app_path = DesktopEntry.exec_path (parsed.exec);
+                    }
+                    var executable = app_path;
                     if (executable == null) {
                         continue;
                     }
@@ -29,6 +35,9 @@ namespace AppRoller {
                     app.name = parsed.name != null && parsed.name.strip () != "" ? parsed.name : Path.get_basename (name);
                     app.comment = parsed.comment;
                     app.version = parsed.version;
+                    app.source_url = parsed.source_url;
+                    app.release_tag = parsed.release_tag;
+                    app.asset_name = parsed.asset_name;
                     app.slug = Path.get_basename (name).split (".")[0];
                     app.categories = parsed.categories;
                     app.arguments = parsed.arguments;
@@ -46,13 +55,18 @@ namespace AppRoller {
             return result;
         }
 
-        public static string? installed_version (string app_path) {
+        public static InstalledApp? find_by_path (string app_path) {
             foreach (var app in list ()) {
                 if (app.app_path == app_path) {
-                    return app.version;
+                    return app;
                 }
             }
             return null;
+        }
+
+        public static string? installed_version (string app_path) {
+            var app = find_by_path (app_path);
+            return app != null ? app.version : null;
         }
 
         private static string? resolve_icon (string slug, string? icon) {
@@ -110,6 +124,9 @@ namespace AppRoller {
                 }
                 keyfile.set_string (DesktopEntry.GROUP, "Exec", exec);
                 keyfile.set_string (DesktopEntry.GROUP, "X-AppRoller-App", app.app_path);
+                set_optional (keyfile, "X-AppRoller-Source", config.source_url);
+                set_optional (keyfile, "X-AppRoller-Release", config.release_tag);
+                set_optional (keyfile, "X-AppRoller-Asset", config.asset_name);
                 if (config.icon_source != null) {
                     var icon = Installer.install_icon_file (app.slug, config.icon_source);
                     keyfile.set_string (DesktopEntry.GROUP, "Icon", icon);
@@ -120,6 +137,14 @@ namespace AppRoller {
                 throw e;
             } catch (Error e) {
                 throw new AppRollerError.FAILED (e.message);
+            }
+        }
+
+        private static void set_optional (KeyFile keyfile, string key, string? value) {
+            if (value != null && value.strip () != "") {
+                keyfile.set_string (DesktopEntry.GROUP, key, value.strip ());
+            } else {
+                remove_key (keyfile, key);
             }
         }
 

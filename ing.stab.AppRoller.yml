@@ -10,6 +10,7 @@ finish-args:
   - --socket=wayland
   - --device=dri
   - --filesystem=home
+  - --talk-name=org.kde.StatusNotifierWatcher
   - --env=APPIMAGE_EXTRACT_AND_RUN=1
 
 modules:

@@ -3,6 +3,9 @@ namespace AppRoller {
 
     public class Application : Adw.Application {
         private Window? window = null;
+        private Settings settings = new Settings ();
+        private TrayIcon? tray = null;
+        private bool started = false;
 
         public Application () {
             Object (application_id: APP_ID, flags: ApplicationFlags.HANDLES_OPEN);
@@ -10,6 +13,9 @@ namespace AppRoller {
 
         protected override void startup () {
             base.startup ();
+            settings = Settings.load ();
+            tray = new TrayIcon ();
+            tray.activate_requested.connect (show_window);
             var about = new GLib.SimpleAction ("about", null);
             about.activate.connect (show_about);
             add_action (about);
@@ -19,21 +25,33 @@ namespace AppRoller {
         }
 
         protected override void activate () {
+            var first_activation = !started;
             ensure_window ();
+            started = true;
+            if (first_activation && settings.run_in_background && tray != null && tray.available) {
+                return;
+            }
             window.present ();
         }
 
         protected override void open (GLib.File[] files, string hint) {
             ensure_window ();
+            started = true;
             window.handle_open_files (files);
             window.present ();
         }
 
         private void ensure_window () {
             if (window == null) {
-                window = new Window (this);
+                window = new Window (this, settings);
+                window.background_available = tray != null && tray.available;
                 load_css ();
             }
+        }
+
+        private void show_window () {
+            ensure_window ();
+            window.present ();
         }
 
         private void show_about () {

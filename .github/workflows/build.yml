@@ -13,7 +13,7 @@ jobs:
       - name: Install dependencies
         run: >-
           dnf install -y git nodejs meson ninja-build vala gcc pkgconf-pkg-config
-          glib2-devel gtk4-devel libadwaita-devel gdk-pixbuf2-devel
+          glib2-devel json-glib-devel libsoup3-devel gtk4-devel libadwaita-devel gdk-pixbuf2-devel
 
       - uses: actions/checkout@v4
 

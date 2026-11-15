@@ -12,6 +12,8 @@ BuildRequires:  vala
 BuildRequires:  gcc
 BuildRequires:  pkgconf-pkg-config
 BuildRequires:  glib2-devel
+BuildRequires:  json-glib-devel
+BuildRequires:  libsoup3-devel
 BuildRequires:  gtk4-devel >= 4.10
 BuildRequires:  libadwaita-devel >= 1.4
 BuildRequires:  gdk-pixbuf2-devel
