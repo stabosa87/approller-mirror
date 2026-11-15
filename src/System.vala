@@ -67,11 +67,59 @@ namespace AppRoller {
         }
 
         public static void launch_desktop_entry (string desktop_path) throws Error {
-            var info = new DesktopAppInfo.from_filename (desktop_path);
-            if (info == null) {
+            string contents;
+            FileUtils.get_contents (desktop_path, out contents);
+            var parsed = DesktopEntry.parse (contents);
+            if (parsed.exec == null) {
                 throw new IOError.NOT_FOUND ("Could not read the desktop entry at %s.", desktop_path);
             }
-            info.launch (null, null);
+
+            string[] argv;
+            Shell.parse_argv (parsed.exec, out argv);
+            var command = without_field_codes (argv);
+            if (command.length == 0) {
+                throw new IOError.NOT_FOUND ("Could not read the desktop entry at %s.", desktop_path);
+            }
+
+            spawn_orphan (command);
+        }
+
+        private static string[] without_field_codes (string[] argv) {
+            string[] result = {};
+            foreach (var arg in argv) {
+                if (arg.length == 2 && arg[0] == '%') {
+                    continue;
+                }
+                result += arg;
+            }
+            return result;
+        }
+
+        private static void spawn_orphan (string[] argv) throws Error {
+            string[] prefix = {};
+            if (is_flatpak ()) {
+                prefix = { "flatpak-spawn", "--host", "--directory=" + home_dir () };
+            } else {
+                var setsid = Environment.find_program_in_path ("setsid");
+                if (setsid != null) {
+                    prefix = { setsid };
+                }
+            }
+
+            var command = new string[prefix.length + argv.length];
+            for (int i = 0; i < prefix.length; i++) {
+                command[i] = prefix[i];
+            }
+            for (int i = 0; i < argv.length; i++) {
+                command[prefix.length + i] = argv[i];
+            }
+
+            Pid pid;
+            Process.spawn_async (home_dir (), command, null,
+                                 SpawnFlags.SEARCH_PATH |
+                                 SpawnFlags.STDOUT_TO_DEV_NULL |
+                                 SpawnFlags.STDERR_TO_DEV_NULL,
+                                 null, out pid);
         }
     }
 }
